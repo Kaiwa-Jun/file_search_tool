@@ -1,0 +1,14 @@
+#!/bin/sh
+
+# pre-commitフック - コミット前にlint-stagedを実行
+echo "🔍 Running pre-commit checks..."
+
+# lint-stagedを実行（ステージされたファイルに対してLintとテストを実行）
+npx lint-staged
+
+if [ $? -ne 0 ]; then
+  echo "❌ Pre-commit checks failed. Please fix the errors and try again."
+  exit 1
+fi
+
+echo "✅ Pre-commit checks passed!"
