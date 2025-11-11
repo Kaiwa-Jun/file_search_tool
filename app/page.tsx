@@ -1,11 +1,12 @@
 'use client';
 
 import { useState } from 'react';
+import React from 'react';
 
 // シンプルなマークダウンパーサー
-function parseMarkdown(text: string): JSX.Element[] {
+function parseMarkdown(text: string): React.ReactElement[] {
   const lines = text.split('\n');
-  const elements: JSX.Element[] = [];
+  const elements: React.ReactElement[] = [];
   let currentParagraph: string[] = [];
   let inCodeBlock = false;
   let codeBlockLanguage = '';
@@ -135,8 +136,8 @@ function parseMarkdown(text: string): JSX.Element[] {
 }
 
 // インラインマークダウンのパース（強調、コード、リンクなど）
-function parseInlineMarkdown(text: string): (string | JSX.Element)[] {
-  const parts: (string | JSX.Element)[] = [];
+function parseInlineMarkdown(text: string): (string | React.ReactElement)[] {
+  const parts: (string | React.ReactElement)[] = [];
   let currentIndex = 0;
   let keyCounter = 0;
 

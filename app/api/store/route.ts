@@ -77,14 +77,10 @@ export async function POST(request: NextRequest) {
       throw new Error('Failed to get store name');
     }
 
-    // Buffer を Blob に変換
-    const { Blob } = await import('buffer');
-    const fileBlob = new Blob([buffer], { type: file.type });
-
     // ファイルをストアにアップロード（Blob オブジェクトを使用）
     await genAI.fileSearchStores.uploadToFileSearchStore({
       fileSearchStoreName: storeName,
-      file: fileBlob,
+      file: new Blob([buffer], { type: file.type }),
       config: {
         mimeType: file.type,
         displayName: file.name,
@@ -102,9 +98,10 @@ export async function POST(request: NextRequest) {
         name: storeName,
       });
 
-      // ストアの状態を確認（indexed が true になれば完了）
-      // 実際のプロパティ名は確認が必要
-      if (storeInfo.indexed || storeInfo.activeDocumentsCount) {
+      // ストアの状態を確認（activeDocumentsCount が設定されていれば完了）
+      // indexed プロパティは型定義に存在しないため、activeDocumentsCount のみチェック
+      const activeCount = storeInfo.activeDocumentsCount;
+      if (activeCount && typeof activeCount === 'number' && activeCount > 0) {
         isIndexed = true;
         break;
       }

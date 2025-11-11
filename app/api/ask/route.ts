@@ -133,13 +133,19 @@ export async function POST(request: NextRequest) {
 
       if (groundingMetadata.groundingChunks) {
         groundingMetadata.groundingChunks.forEach((chunk) => {
+          // GroundingChunk型のプロパティに安全にアクセス
+          const chunkAny = chunk as unknown as {
+            file?: { uri?: string; displayName?: string };
+            chunkIndex?: number;
+            text?: string;
+          };
           citations.push({
-            fileUri: chunk.file?.uri,
-            chunkIndex: chunk.chunkIndex,
-            pageNumber: chunk.file?.displayName
-              ? parseInt(chunk.file.displayName.match(/page-(\d+)/)?.[1] || '0')
+            fileUri: chunkAny.file?.uri,
+            chunkIndex: chunkAny.chunkIndex,
+            pageNumber: chunkAny.file?.displayName
+              ? parseInt(chunkAny.file.displayName.match(/page-(\d+)/)?.[1] || '0')
               : undefined,
-            text: chunk.text,
+            text: chunkAny.text,
           });
         });
       }
