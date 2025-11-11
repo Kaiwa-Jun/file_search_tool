@@ -109,6 +109,85 @@ cp .env.example .env.local
 npm run dev
 ```
 
+## APIキーの設定と確認
+
+### 1. APIキーの取得
+
+1. [Google AI Studio](https://aistudio.google.com/app/apikey) にアクセス
+2. 「Create API Key」をクリック
+3. プロジェクトを選択（または新規作成）
+4. APIキーをコピー
+
+### 2. 環境変数の設定
+
+`.env.local` ファイルに以下を設定：
+
+```bash
+GEMINI_API_KEY=your_api_key_here
+# オプション: 使用するモデル名（デフォルトは gemini-1.5-flash）
+GEMINI_MODEL_NAME=gemini-1.5-flash
+```
+
+### 3. 確認事項
+
+#### ✅ APIキーが正しく設定されているか
+
+- `.env.local` に `GEMINI_API_KEY` が設定されているか確認
+- サーバーログで `GEMINI_API_KEY is not set` エラーが出ていないか確認
+
+#### ✅ 使用しているモデルが無料プランで利用可能か
+
+無料プランで利用可能なモデル：
+
+- `gemini-1.5-flash`（推奨・高速）
+- `gemini-1.5-pro`（高精度）
+- `gemini-2.0-flash`（最新版、利用可能な場合）
+
+**注意**: `gemini-2.0-flash-exp` などの実験的モデル（`-exp` サフィックス）は無料プランでは利用できません。
+
+#### ✅ クォータの確認
+
+1. [Google AI Studio](https://aistudio.google.com/app/projects) にアクセス
+2. プロジェクトを選択
+3. 「Usage」または「Quotas」タブで利用状況を確認
+4. 429エラー（RESOURCE_EXHAUSTED）が発生する場合：
+   - 無料プランのクォータ制限に達している可能性があります
+   - しばらく待ってから再試行するか、有料プランへのアップグレードを検討してください
+
+#### ✅ File Search Tool が有効か
+
+File Search Tool は通常、APIキーがあれば自動的に利用可能です。特別な設定は不要です。
+
+### 4. トラブルシューティング
+
+#### エラー: "API quota exceeded" または "limit: 0"
+
+- **原因**:
+  - 無料プランのクォータ制限に達している
+  - または、使用しているモデルが無料プランで利用できない（クォータが0に設定されている）
+- **対処法**:
+  1. **モデル名の変更**: `.env.local` で `GEMINI_MODEL_NAME` を無料プラン対応のモデルに変更
+     ```bash
+     # 実験的モデル（-exp サフィックス）は無料プランでは利用できない場合があります
+     # 以下のいずれかを試してください：
+     GEMINI_MODEL_NAME=gemini-2.0-flash
+     # または
+     GEMINI_MODEL_NAME=gemini-1.5-flash
+     ```
+  2. しばらく待ってから再試行（エラーメッセージに再試行までの時間が表示されます）
+  3. [Google AI Studio](https://aistudio.google.com/app/projects) でクォータの使用状況を確認
+  4. 有料プランへのアップグレードを検討
+
+#### エラー: "GEMINI_API_KEY is not set"
+
+- **原因**: 環境変数が正しく設定されていない
+- **対処法**: `.env.local` ファイルに `GEMINI_API_KEY` を設定し、開発サーバーを再起動
+
+#### エラー: "Invalid file type"
+
+- **原因**: 許可されていないファイル形式をアップロードしている
+- **対処法**: PDF、Markdown、TXT ファイルのみアップロード可能です
+
 ## 実装タスク
 
 詳細な実装タスクは [TASKS.md](./TASKS.md) を参照してください。
