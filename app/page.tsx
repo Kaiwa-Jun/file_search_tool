@@ -9,7 +9,6 @@ function parseMarkdown(text: string): React.ReactElement[] {
   const elements: React.ReactElement[] = [];
   let currentParagraph: string[] = [];
   let inCodeBlock = false;
-  let codeBlockLanguage = '';
   let codeBlockContent: string[] = [];
 
   const flushParagraph = () => {
@@ -55,11 +54,9 @@ function parseMarkdown(text: string): React.ReactElement[] {
       if (inCodeBlock) {
         flushCodeBlock();
         inCodeBlock = false;
-        codeBlockLanguage = '';
       } else {
         flushParagraph();
         inCodeBlock = true;
-        codeBlockLanguage = line.substring(3).trim();
       }
       continue;
     }
